@@ -25,7 +25,6 @@ namespace NoCSim {
     uint32_t m_Rows, m_Columns;
 
     std::vector<Ref<Node>> m_Nodes;
-    std::vector<Ref<Flow>> m_Flows;
   };
 
 }

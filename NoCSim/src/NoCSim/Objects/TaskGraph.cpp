@@ -116,20 +116,6 @@ namespace NoCSim {
       pos = timePeriod.find_first_of("\t", begin);
     }
 
-    // Create nodes
-    for (int index = 0; index < m_NetworkSize; index++)
-    {
-      auto node = Node::Create(index);
-
-      auto it = std::find(taskMappingVector.begin(), taskMappingVector.end(), index);
-      uint32_t taskID = std::distance(taskMappingVector.begin(), it);
-      auto task = Task::Create(taskID, executionTimeVector[taskID], timePeriodVector[taskID], taskPriorityVector[taskID]);
-      task->SetInputVolumes(taskGraphGrid[taskID]);
-
-      node->AssignTask(task);
-      m_Nodes.push_back(node);
-    }
-
     // Read flowPriority file
     std::string flowPriority = ReadFile(filepaths.at("flowPriority"));
     begin = 0;
@@ -146,30 +132,48 @@ namespace NoCSim {
       pos = flowPriority.find_first_of(" ", begin);
     }
 
+    // Create nodes
+    std::vector<int> coreMapping(m_NetworkSize, -1);
+    for (int index = 0; index < m_NetworkSize; index++)
+    {
+      auto node = Node::Create(index);
+
+      uint32_t taskID = taskMappingVector[index];
+      coreMapping[taskID] = index;
+      auto task = Task::Create(taskID, executionTimeVector[taskID], timePeriodVector[taskID], taskPriorityVector[taskID]);
+      std::vector<float> inputVolumes;
+      for (int i = 0; i < m_NetworkSize; i++)
+        inputVolumes.push_back(taskGraphGrid[i][taskID]);
+      task->SetInputVolumes(inputVolumes);
+
+      node->AssignTask(task);
+      m_Nodes.push_back(node);
+    }
+
     // Create flows
     uint32_t flowID = 0;
-    for (int source = 0; source < m_NetworkSize; source++)
+    for (int i = 0; i < m_NetworkSize; i++)
     {
-      auto row = taskGraphGrid[source];
-      for (int destination = 0; destination < m_NetworkSize; destination++)
+      auto row = taskGraphGrid[i];
+      for (int j = 0; j < m_NetworkSize; j++)
       {
-        float element = row[destination];
+        float element = row[j];
         if (element != 0.0f)
         {
-          auto flow = Flow::Create(flowID, source, destination);
+          auto flow = Flow::Create(flowID, coreMapping[i], coreMapping[j]);
           flow->SetFlowVolume(element);
           flow->SetFlowPriority(flowPriorityVector[flowID]);
-          m_Flows.push_back(flow);
+          m_Nodes[coreMapping[i]]->AddFlow(flow);
           flowID++;
         }
       }
     }
 
-    std::sort(m_Flows.begin(), m_Flows.end(),
-      [](const auto& a, const auto& b)
-      {
-        return (a->GetFlowPriority() < b->GetFlowPriority());
-      });
+    // std::sort(m_Flows.begin(), m_Flows.end(),
+    //   [](const auto& a, const auto& b)
+    //   {
+    //     return (a->GetFlowPriority() < b->GetFlowPriority());
+    //   });
   }
 
   std::string TaskGraph::ReadFile(const std::string& path)
@@ -219,9 +223,6 @@ namespace NoCSim {
   {
     for (Ref<Node>& node : m_Nodes)
       node->OnUpdate();
-
-    for (auto flow : m_Flows)
-      flow->OnUpdate();
   }
 
 }

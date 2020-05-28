@@ -6,7 +6,7 @@ namespace NoCSim {
 
   enum TaskState
   {
-    Wait, Execute, Complete
+    Wait, Execute, Complete, Idle
   };
 
   class Task

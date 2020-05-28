@@ -28,6 +28,9 @@ namespace NoCSim {
 
   void Task::OnUpdate()
   {
+    if (m_TaskState == Idle)
+      return;
+
     if (m_TaskState == Wait)
     {
       float totalRemainingInput = 0.0f;
@@ -38,6 +41,7 @@ namespace NoCSim {
         NS_CORE_TRACE("Executing Task {0}", m_TaskID);
         m_TaskState = Execute;
       }
+      return;
     }
 
     if (m_TaskState == Execute)
@@ -49,11 +53,13 @@ namespace NoCSim {
       }
       else
         m_RemainingExecutionTime -= 0.5f; // Change to timestep
+      return;
     }
 
     if (m_TaskState == Complete)
     {
       m_RemainingInput = m_InputVolumes;
+      m_TaskState = Idle;
     }
   }
 
@@ -61,7 +67,6 @@ namespace NoCSim {
   {
     m_TaskState = Wait;
     m_RemainingExecutionTime = m_ExecutionTime;
-    m_RemainingInput = m_InputVolumes;
   }
 
 }
