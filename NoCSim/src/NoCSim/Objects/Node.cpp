@@ -19,6 +19,13 @@ namespace NoCSim {
     }
 
     m_Router->OnUpdate();
+
+    if (!m_Router->GetNodeBuffer().empty())
+    {
+      for (auto flit : m_Router->GetNodeBuffer())
+        m_Task->InputFlit(flit);
+      m_Router->ClearNodeBuffer();
+    }
   }
 
   Ref<Node> Node::Create(uint32_t nodeID)

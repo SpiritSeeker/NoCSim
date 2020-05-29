@@ -25,6 +25,7 @@ namespace NoCSim {
     void SetFlowPriority(uint32_t flowPriority) { m_FlowPriority = flowPriority; }
     void SetFlowVolume(float flowVolume) { m_FlowVolume = flowVolume; }
     void SetFlowState(FlowState flowState) { m_FlowState = flowState; }
+    void SetSourceTaskID(uint32_t taskID) { m_TaskID = taskID; }
 
     const uint32_t GetFlowID() const { return m_FlowID; }
     const uint32_t GetSourceCoreID() const { return m_SourceCoreID; }
@@ -33,10 +34,12 @@ namespace NoCSim {
     const float GetFlowVolume() const { return m_FlowVolume; }
     const FlowState GetFlowState() const { return m_FlowState; }
     const uint32_t GetIteration() const { return m_Iteration; }
+    const uint32_t GetSourceTaskID() const { return m_TaskID; }
 
     static Ref<Flow> Create(uint32_t flowID);
     static Ref<Flow> Create(uint32_t flowID, uint32_t sourceCoreID, uint32_t destinationCoreID);
   private:
+    uint32_t m_TaskID;
     uint32_t m_FlowID;
     uint32_t m_SourceCoreID;
     uint32_t m_DestinationCoreID;

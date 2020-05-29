@@ -22,18 +22,15 @@ namespace NoCSim {
     m_Iteration++;
     m_FlowState = Active;
     m_RemainingVolume = m_FlowVolume;
-    NS_CORE_TRACE("Begining Flow {0}: From Node {1} to Node {2}", m_FlowID, m_SourceCoreID, m_DestinationCoreID);
+    NS_CORE_TRACE("Begining Flow {0}: From Node {1} to Node {2}: Priority {3}", m_FlowID, m_SourceCoreID, m_DestinationCoreID, m_FlowPriority);
   }
 
   Ref<Flit> Flow::GetFlit()
   {
-    Ref<Flit> flit = CreateRef<Flit>(m_SourceCoreID, m_DestinationCoreID, m_FlowID, m_FlowPriority, m_Iteration);
+    Ref<Flit> flit = CreateRef<Flit>(m_TaskID, m_SourceCoreID, m_DestinationCoreID, m_FlowID, m_FlowPriority, m_Iteration);
     m_RemainingVolume -= flit->GetFlitSize();
     if (m_RemainingVolume < 0)
-    {
       m_FlowState = NonActive;
-      NS_CORE_TRACE("Finished Flit generation for Flow {0}!", m_FlowID);
-    }
 
     return flit;
   }

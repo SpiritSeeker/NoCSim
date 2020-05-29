@@ -137,6 +137,29 @@ namespace NoCSim {
     for (int index = 0; index < m_NetworkSize; index++)
     {
       auto node = Node::Create(index);
+      int posX = index % m_Columns;
+      int posY = index / m_Rows;
+      std::vector<std::string> routingTable;
+      for (int i = 0; i < m_NetworkSize; i++)
+      {
+        int targetX = i % m_Columns;
+        int targetY = i / m_Rows;
+        if ((targetX - posX) + (targetY - posY) > 0)
+        {
+          if ((targetX - posX) - (targetY - posY) > 0)
+            routingTable.push_back("Right");
+          else
+            routingTable.push_back("Bottom");
+        }
+        else
+        {
+          if ((targetX - posX) - (targetY - posY) > 0)
+            routingTable.push_back("Top");
+          else
+            routingTable.push_back("Left");
+        }
+      }
+      node->GetRouter()->SetRoutingTable(routingTable);
 
       uint32_t taskID = taskMappingVector[index];
       coreMapping[taskID] = index;
@@ -163,17 +186,23 @@ namespace NoCSim {
           auto flow = Flow::Create(flowID, coreMapping[i], coreMapping[j]);
           flow->SetFlowVolume(element);
           flow->SetFlowPriority(flowPriorityVector[flowID]);
+          flow->SetSourceTaskID(i);
           m_Nodes[coreMapping[i]]->GetRouter()->AddFlow(flow);
           flowID++;
         }
       }
     }
 
-    // std::sort(m_Flows.begin(), m_Flows.end(),
-    //   [](const auto& a, const auto& b)
-    //   {
-    //     return (a->GetFlowPriority() < b->GetFlowPriority());
-    //   });
+    // Create channels
+    for (uint32_t i = 0; i < m_Columns; i++)
+      for (uint32_t j = 0; j < m_Rows; j++)
+      {
+        uint32_t location = j * m_Columns + i;
+        if (i < m_Columns - 1)
+          m_Channels.push_back(Channel::Create(m_Nodes[location]->GetRouter(), "Right", m_Nodes[location + 1]->GetRouter(), "Left"));
+        if (j < m_Rows - 1)
+          m_Channels.push_back(Channel::Create(m_Nodes[location]->GetRouter(), "Bottom", m_Nodes[location + m_Columns]->GetRouter(), "Top"));
+      }
   }
 
   std::string TaskGraph::ReadFile(const std::string& path)
@@ -218,6 +247,8 @@ namespace NoCSim {
   {
     for (Ref<Node>& node : m_Nodes)
       node->OnUpdate();
+    for (Ref<Channel>& channel : m_Channels)
+      channel->OnUpdate();
   }
 
   Ref<TaskGraph> TaskGraph::Create(const std::unordered_map<std::string, std::string>& filepaths)

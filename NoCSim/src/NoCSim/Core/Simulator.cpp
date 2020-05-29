@@ -18,7 +18,7 @@ namespace NoCSim {
   void Simulator::Run()
   {
     NS_CORE_TRACE("Simulator running!");
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 150; i++)
     {
       NS_CORE_WARN("Iteration {0}", i+1);
       m_TaskGraph->OnUpdate();

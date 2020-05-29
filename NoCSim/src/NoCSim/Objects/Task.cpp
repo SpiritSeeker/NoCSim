@@ -16,16 +16,6 @@ namespace NoCSim {
     m_RemainingExecutionTime = m_ExecutionTime;
   }
 
-  Ref<Task> Task::Create(uint32_t taskID)
-  {
-    return CreateRef<Task>(taskID);
-  }
-
-  Ref<Task> Task::Create(uint32_t taskID, float executionTime, float timePeriod, uint32_t taskPriority)
-  {
-    return CreateRef<Task>(taskID, executionTime, timePeriod, taskPriority);
-  }
-
   void Task::OnUpdate()
   {
     if (m_TaskState == Idle)
@@ -36,7 +26,7 @@ namespace NoCSim {
       float totalRemainingInput = 0.0f;
       for (auto element : m_RemainingInput)
         totalRemainingInput += element;
-      if (totalRemainingInput == 0)
+      if (totalRemainingInput <= 0)
       {
         NS_CORE_TRACE("Executing Task {0}", m_TaskID);
         m_TaskState = Execute;
@@ -67,6 +57,23 @@ namespace NoCSim {
   {
     m_TaskState = Wait;
     m_RemainingExecutionTime = m_ExecutionTime;
+  }
+
+  void Task::InputFlit(const Ref<Flit>& flit)
+  {
+    m_RemainingInput[flit->GetTaskID()] -= flit->GetFlitSize();
+    if (m_RemainingInput[flit->GetTaskID()] < 0)
+      NS_CORE_INFO("Flow {0} Complete!", flit->GetFlowID());
+  }
+
+  Ref<Task> Task::Create(uint32_t taskID)
+  {
+    return CreateRef<Task>(taskID);
+  }
+
+  Ref<Task> Task::Create(uint32_t taskID, float executionTime, float timePeriod, uint32_t taskPriority)
+  {
+    return CreateRef<Task>(taskID, executionTime, timePeriod, taskPriority);
   }
 
 }

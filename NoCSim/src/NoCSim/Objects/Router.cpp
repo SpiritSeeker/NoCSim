@@ -5,7 +5,12 @@ namespace NoCSim {
 
   Router::Router(uint32_t routerID)
     : m_RouterID(routerID)
-  {}
+  {
+    m_ToChannel["Left"] = std::vector<Ref<Flit>>();
+    m_ToChannel["Right"] = std::vector<Ref<Flit>>();
+    m_ToChannel["Top"] = std::vector<Ref<Flit>>();
+    m_ToChannel["Bottom"] = std::vector<Ref<Flit>>();
+  }
 
   void Router::BeginFlows()
   {
@@ -30,6 +35,7 @@ namespace NoCSim {
     }
     m_InputBuffer.clear();
 
+
     for (auto flow : m_Flows)
     {
       if (flow->GetFlowState() == Active)
@@ -45,11 +51,34 @@ namespace NoCSim {
         }
 
         if (!flitInBuffer)
-          m_OutputBuffer.push_back(flow->GetFlit());
+        {
+          auto flit = flow->GetFlit();
+          m_OutputBuffer.push_back(flit);
+        }
       }
     }
 
+    if (!std::is_sorted(m_OutputBuffer.begin(), m_OutputBuffer.end(),
+      [](const auto& a, const auto& b)
+      {
+        return (a->GetPriority() < b->GetPriority());
+      }))
+      std::sort(m_OutputBuffer.begin(), m_OutputBuffer.end(),
+        [](const auto& a, const auto& b)
+        {
+          return (a->GetPriority() < b->GetPriority());
+        });
 
+    std::vector<Ref<Flit>> retainList;
+    for (uint32_t i = 0; i < m_OutputBuffer.size(); i++)
+    {
+      std::string direction = m_RoutingTable[m_OutputBuffer[i]->GetDestinationCoreID()];
+      if (m_ToChannel.at(direction).empty())
+        m_ToChannel.at(direction).push_back(m_OutputBuffer[i]);
+      else
+        retainList.push_back(m_OutputBuffer[i]);
+    }
+    m_OutputBuffer = retainList;
   }
 
 }

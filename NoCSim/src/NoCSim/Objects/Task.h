@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NoCSim/Core/Core.h"
+#include "NoCSim/Objects/Flit.h"
 
 namespace NoCSim {
 
@@ -18,6 +19,7 @@ namespace NoCSim {
 
     void OnUpdate();
     void Reset();
+    void InputFlit(const Ref<Flit>& flit);
 
     void SetExecutionTime(float executionTime) { m_ExecutionTime = executionTime; m_RemainingExecutionTime = executionTime; }
     void SetTimePeriod(float timePeriod) { m_TimePeriod = timePeriod; }

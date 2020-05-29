@@ -5,6 +5,7 @@
 #include "NoCSim/Objects/Node.h"
 #include "NoCSim/Objects/Task.h"
 #include "NoCSim/Objects/Flow.h"
+#include "NoCSim/Objects/Channel.h"
 
 namespace NoCSim {
 
@@ -25,6 +26,7 @@ namespace NoCSim {
     uint32_t m_Rows, m_Columns;
 
     std::vector<Ref<Node>> m_Nodes;
+    std::vector<Ref<Channel>> m_Channels;
   };
 
 }
