@@ -163,7 +163,7 @@ namespace NoCSim {
           auto flow = Flow::Create(flowID, coreMapping[i], coreMapping[j]);
           flow->SetFlowVolume(element);
           flow->SetFlowPriority(flowPriorityVector[flowID]);
-          m_Nodes[coreMapping[i]]->AddFlow(flow);
+          m_Nodes[coreMapping[i]]->GetRouter()->AddFlow(flow);
           flowID++;
         }
       }
@@ -214,15 +214,15 @@ namespace NoCSim {
     return taskGraphGrid;
   }
 
-  Ref<TaskGraph> TaskGraph::Create(const std::unordered_map<std::string, std::string>& filepaths)
-  {
-    return CreateRef<TaskGraph>(filepaths);
-  }
-
   void TaskGraph::OnUpdate()
   {
     for (Ref<Node>& node : m_Nodes)
       node->OnUpdate();
+  }
+
+  Ref<TaskGraph> TaskGraph::Create(const std::unordered_map<std::string, std::string>& filepaths)
+  {
+    return CreateRef<TaskGraph>(filepaths);
   }
 
 }

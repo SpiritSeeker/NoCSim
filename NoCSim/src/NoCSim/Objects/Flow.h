@@ -1,12 +1,13 @@
 #pragma once
 
 #include "NoCSim/Core/Core.h"
+#include "NoCSim/Objects/Flit.h"
 
 namespace NoCSim {
 
   enum FlowState
   {
-    FlowWait, FlowTransmit, FlowComplete
+    NonActive, Active
   };
 
   class Flow
@@ -16,7 +17,8 @@ namespace NoCSim {
     Flow(uint32_t flowID, uint32_t sourceCoreID, uint32_t destinationCoreID);
     ~Flow() = default;
 
-    void OnUpdate();
+    void NextIteration();
+    Ref<Flit> GetFlit();
 
     void SetSourceCoreID(uint32_t sourceCoreID) { m_SourceCoreID = sourceCoreID; }
     void SetDestinationCoreID(uint32_t destinationCoreID) { m_DestinationCoreID = destinationCoreID; }
@@ -30,6 +32,7 @@ namespace NoCSim {
     const uint32_t GetFlowPriority() const { return m_FlowPriority; }
     const float GetFlowVolume() const { return m_FlowVolume; }
     const FlowState GetFlowState() const { return m_FlowState; }
+    const uint32_t GetIteration() const { return m_Iteration; }
 
     static Ref<Flow> Create(uint32_t flowID);
     static Ref<Flow> Create(uint32_t flowID, uint32_t sourceCoreID, uint32_t destinationCoreID);
@@ -39,7 +42,10 @@ namespace NoCSim {
     uint32_t m_DestinationCoreID;
     uint32_t m_FlowPriority;
     float m_FlowVolume;
+
     FlowState m_FlowState;
+    uint32_t m_Iteration;
+    float m_RemainingVolume;
   };
 
 }

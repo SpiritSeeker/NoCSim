@@ -3,15 +3,10 @@
 
 namespace NoCSim {
 
-  Node::Node(uint32_t nodeID, float routerBufferSize)
+  Node::Node(uint32_t nodeID)
     : m_NodeID(nodeID)
   {
-    m_Router = CreateRef<Router>(m_NodeID, routerBufferSize);
-  }
-
-  Ref<Node> Node::Create(uint32_t nodeID, float routerBufferSize)
-  {
-    return CreateRef<Node>(nodeID, routerBufferSize);
+    m_Router = CreateRef<Router>(m_NodeID);
   }
 
   void Node::OnUpdate()
@@ -20,13 +15,15 @@ namespace NoCSim {
 
     if (m_Task->GetTaskState() == Complete)
     {
-      for (auto flow : m_Flows)
-      {
-        NS_CORE_TRACE("Begining Flow {0}: From Node {1} to Node {2}!", flow->GetFlowID(), flow->GetSourceCoreID(), flow->GetDestinationCoreID());
-        flow->SetFlowState(FlowTransmit);
-        m_Router->AddFlow(flow);
-      }
+      m_Router->BeginFlows();
     }
+
+    m_Router->OnUpdate();
+  }
+
+  Ref<Node> Node::Create(uint32_t nodeID)
+  {
+    return CreateRef<Node>(nodeID);
   }
 
 }
