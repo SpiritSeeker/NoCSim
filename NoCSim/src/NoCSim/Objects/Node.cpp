@@ -9,16 +9,16 @@ namespace NoCSim {
     m_Router = CreateRef<Router>(m_NodeID);
   }
 
-  void Node::OnUpdate()
+  void Node::OnUpdate(float timestep)
   {
-    m_Task->OnUpdate();
+    m_Task->OnUpdate(timestep);
 
     if (m_Task->GetTaskState() == Complete)
     {
       m_Router->BeginFlows();
     }
 
-    m_Router->OnUpdate();
+    m_Router->OnUpdate(timestep);
 
     if (!m_Router->GetNodeBuffer().empty())
     {

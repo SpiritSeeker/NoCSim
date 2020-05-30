@@ -16,7 +16,7 @@ namespace NoCSim {
 
     void AssignTask(const Ref<Task>& task) { m_Task = task; }
 
-    void OnUpdate();
+    void OnUpdate(float timestep);
 
     const uint32_t GetNodeID() const { return m_NodeID; }
     const Ref<Router>& GetRouter() const { return m_Router; }

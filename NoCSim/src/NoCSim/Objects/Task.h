@@ -17,7 +17,7 @@ namespace NoCSim {
     Task(uint32_t taskID, float executionTime, float timePeriod, uint32_t taskPriority);
     ~Task() = default;
 
-    void OnUpdate();
+    void OnUpdate(float timestep);
     void Reset();
     void InputFlit(const Ref<Flit>& flit);
 

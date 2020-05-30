@@ -9,6 +9,9 @@ namespace NoCSim {
   {
     NS_CORE_ASSERT(!s_Instance, "Simulator instance already exists!");
     s_Instance = this;
+    m_Timestep = 0.01f;
+    m_SimulationLimit = 1000000.0;
+    m_CycleCounter = 0;
     NS_CORE_INFO("Simulator instance created!");
   }
 
@@ -18,10 +21,13 @@ namespace NoCSim {
   void Simulator::Run()
   {
     NS_CORE_TRACE("Simulator running!");
-    for (int i = 0; i < 150; i++)
+    while (m_CycleCounter * m_Timestep < m_SimulationLimit)
     {
-      NS_CORE_WARN("Iteration {0}", i+1);
-      m_TaskGraph->OnUpdate();
+      m_CycleCounter++;
+      double millis = m_CycleCounter * m_Timestep * 0.001;
+      if ((uint64_t)(millis) - (millis) == 0)
+        NS_CORE_WARN("Time: {0} ms", millis);
+      m_TaskGraph->OnUpdate(m_Timestep);
     }
   }
 

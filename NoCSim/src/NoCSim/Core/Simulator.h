@@ -15,6 +15,8 @@ namespace  NoCSim {
 		void Run();
 
     void SetTaskGraph(const Ref<TaskGraph>& taskGraph) { m_TaskGraph = taskGraph; }
+		void SetClockPeriod_us(float us) { m_Timestep = us; }
+		void SetSimulationLimit_s(float sec) { m_SimulationLimit = sec * 1000000; }
 
 		inline Ref<TaskGraph>& GetTaskGraph() { return m_TaskGraph; }
 		inline static Simulator& Get() { return *s_Instance; }
@@ -23,6 +25,9 @@ namespace  NoCSim {
 		bool m_Running = true;
 	private:
 		static Simulator* s_Instance;
+		float m_Timestep;
+		double m_SimulationLimit;
+		uint64_t m_CycleCounter;
 	};
 
 	Simulator* CreateSimulator() { return new Simulator(); }

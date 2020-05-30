@@ -243,12 +243,12 @@ namespace NoCSim {
     return taskGraphGrid;
   }
 
-  void TaskGraph::OnUpdate()
+  void TaskGraph::OnUpdate(float timestep)
   {
     for (Ref<Node>& node : m_Nodes)
-      node->OnUpdate();
+      node->OnUpdate(timestep);
     for (Ref<Channel>& channel : m_Channels)
-      channel->OnUpdate();
+      channel->OnUpdate(timestep);
   }
 
   Ref<TaskGraph> TaskGraph::Create(const std::unordered_map<std::string, std::string>& filepaths)

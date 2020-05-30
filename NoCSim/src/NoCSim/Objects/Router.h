@@ -15,7 +15,7 @@ namespace NoCSim {
     void AddFlow(const Ref<Flow>& flow) { m_Flows.push_back(flow); }
     void BeginFlows();
 
-    void OnUpdate();
+    void OnUpdate(float timestep);
 
     void ReceiveFlit(const Ref<Flit>& flit) { m_InputBuffer.push_back(flit); }
 

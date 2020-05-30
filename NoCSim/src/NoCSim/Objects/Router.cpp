@@ -24,7 +24,7 @@ namespace NoCSim {
     });
   }
 
-  void Router::OnUpdate()
+  void Router::OnUpdate(float timestep)
   {
     for (auto flit : m_InputBuffer)
     {

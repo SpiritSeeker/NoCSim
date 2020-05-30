@@ -16,7 +16,7 @@ namespace NoCSim {
     m_RemainingExecutionTime = m_ExecutionTime;
   }
 
-  void Task::OnUpdate()
+  void Task::OnUpdate(float timestep)
   {
     if (m_TaskState == Idle)
       return;
@@ -42,7 +42,7 @@ namespace NoCSim {
         m_TaskState = Complete;
       }
       else
-        m_RemainingExecutionTime -= 0.5f; // Change to timestep
+        m_RemainingExecutionTime -= timestep * 0.001f;
       return;
     }
 
