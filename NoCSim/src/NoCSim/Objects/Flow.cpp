@@ -17,12 +17,12 @@ namespace NoCSim {
     m_Iteration = 0;
   }
 
-  void Flow::NextIteration()
+  void Flow::NextIteration(uint32_t iteration)
   {
-    m_Iteration++;
+    m_Iteration = iteration;
     m_FlowState = Active;
     m_RemainingVolume = m_FlowVolume;
-    NS_CORE_TRACE("Begining Flow {0}: From Node {1} to Node {2}: Priority {3}", m_FlowID, m_SourceCoreID, m_DestinationCoreID, m_FlowPriority);
+    NS_CORE_TRACE("Begining Flow {0}: From Node {1} to Node {2}", m_FlowID, m_SourceCoreID, m_DestinationCoreID);
   }
 
   Ref<Flit> Flow::GetFlit()

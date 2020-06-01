@@ -12,10 +12,10 @@ namespace NoCSim {
     m_ToChannel["Bottom"] = std::vector<Ref<Flit>>();
   }
 
-  void Router::BeginFlows()
+  void Router::BeginFlows(uint32_t iteration)
   {
     for (auto flow : m_Flows)
-      flow->NextIteration();
+      flow->NextIteration(iteration);
 
     std::remove_if(m_OutputBuffer.begin(), m_OutputBuffer.end(),
     [this](const Ref<Flit>& flit)

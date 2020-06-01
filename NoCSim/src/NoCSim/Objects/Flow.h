@@ -17,7 +17,7 @@ namespace NoCSim {
     Flow(uint32_t flowID, uint32_t sourceCoreID, uint32_t destinationCoreID);
     ~Flow() = default;
 
-    void NextIteration();
+    void NextIteration(uint32_t iteration);
     Ref<Flit> GetFlit();
 
     void SetSourceCoreID(uint32_t sourceCoreID) { m_SourceCoreID = sourceCoreID; }

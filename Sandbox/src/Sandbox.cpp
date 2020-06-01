@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 
 	NoCSim::Ref<NoCSim::TaskGraph> taskGraph = NoCSim::TaskGraph::Create(filepaths);
 	sim->SetTaskGraph(taskGraph);
-	sim->SetClockPeriod_us(0.01f);
+	sim->SetClockPeriod_us(0.1f);
 	sim->SetSimulationLimit_s(1.0f);
 
 	sim->Run();

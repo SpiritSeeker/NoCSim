@@ -13,7 +13,7 @@ namespace NoCSim {
     ~Router() = default;
 
     void AddFlow(const Ref<Flow>& flow) { m_Flows.push_back(flow); }
-    void BeginFlows();
+    void BeginFlows(uint32_t iteration);
 
     void OnUpdate(float timestep);
 

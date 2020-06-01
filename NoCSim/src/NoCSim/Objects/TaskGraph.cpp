@@ -251,6 +251,21 @@ namespace NoCSim {
       channel->OnUpdate(timestep);
   }
 
+  float TaskGraph::GetSchedulability()
+  {
+    uint32_t completedTasks = 0;
+    uint32_t totalTasks = 0;
+    for (auto node : m_Nodes)
+    {
+      completedTasks += node->GetCompletedTasks();
+      totalTasks += node->GetTotalTasks();
+    }
+
+    if (totalTasks == 0)
+      return 1;
+    return (float)completedTasks / (float)totalTasks;
+  }
+
   Ref<TaskGraph> TaskGraph::Create(const std::unordered_map<std::string, std::string>& filepaths)
   {
     return CreateRef<TaskGraph>(filepaths);

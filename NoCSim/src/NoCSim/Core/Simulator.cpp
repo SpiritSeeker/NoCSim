@@ -26,9 +26,12 @@ namespace NoCSim {
       m_CycleCounter++;
       double millis = m_CycleCounter * m_Timestep * 0.001;
       if ((uint64_t)(millis) - (millis) == 0)
-        NS_CORE_WARN("Time: {0} ms", millis);
+      {
+        NS_CORE_WARN("Time: {0} ms, Schedulability: {1}%", millis, m_TaskGraph->GetSchedulability() * 100);
+      }
       m_TaskGraph->OnUpdate(m_Timestep);
     }
+    NS_CORE_WARN("Final Schedulability: {0}%", m_TaskGraph->GetSchedulability() * 100);
   }
 
 }

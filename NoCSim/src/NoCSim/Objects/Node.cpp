@@ -7,6 +7,8 @@ namespace NoCSim {
     : m_NodeID(nodeID)
   {
     m_Router = CreateRef<Router>(m_NodeID);
+    m_TotalTasks = 0;
+    m_CompletedTasks = 0;
   }
 
   void Node::OnUpdate(float timestep)
@@ -15,7 +17,7 @@ namespace NoCSim {
 
     if (m_Task->GetTaskState() == Complete)
     {
-      m_Router->BeginFlows();
+      m_Router->BeginFlows(m_Task->GetIteration());
     }
 
     m_Router->OnUpdate(timestep);
@@ -25,6 +27,14 @@ namespace NoCSim {
       for (auto flit : m_Router->GetNodeBuffer())
         m_Task->InputFlit(flit);
       m_Router->ClearNodeBuffer();
+    }
+
+    if (!m_Task->GetDeadlinesVector().empty())
+    {
+      m_TotalTasks++;
+      if (m_Task->GetDeadlinesVector()[0])
+        m_CompletedTasks++;
+      m_Task->GetDeadlinesVector().clear();
     }
   }
 

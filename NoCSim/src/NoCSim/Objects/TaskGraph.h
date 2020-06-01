@@ -16,6 +16,7 @@ namespace NoCSim {
     ~TaskGraph() = default;
 
     void OnUpdate(float timestep);
+    float GetSchedulability();
 
     static Ref<TaskGraph> Create(const std::unordered_map<std::string, std::string>& filepaths);
   private:
