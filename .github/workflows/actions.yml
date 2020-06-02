@@ -1,0 +1,21 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: vendor/bin/premake/Linux/premake5 gmake2
+    - name: make
+      run: make
+    - name: run
+      run: ./bin/Debug-linux-x86_64/Sandbox/Sandbox
